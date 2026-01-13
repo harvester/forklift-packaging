@@ -1,0 +1,27 @@
+#!/bin/bash
+set -ex
+
+TOP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )"
+SCRIPTS_DIR="${TOP_DIR}/scripts"
+PACKAGE_DIR="${TOP_DIR}/package"
+
+# sets IMAGE_TAG and is used for building the image
+source $SCRIPTS_DIR/version
+
+if [[ -z $COMPONENT_NAME ]]
+then
+    for component in forklift-api forklift-controller openstack-populator ova-provider-server ovirt-populator populator-controller validation virt-v2v vsphere-xcopy-populator forklift-operator
+    do
+        docker build --build-arg ARCH=${ARCH} -t ${REPO}/harvester-${component}:${IMAGE_TAG} -f $PACKAGE_DIR/${component}/Dockerfile /go/src/github.com/kubev2v/forklift
+        if [[ -n $PUSH ]] 
+        then
+            docker push ${REPO}/harvester-${component}:${IMAGE_TAG}
+        fi
+    done
+else 
+  docker build --build-arg ARCH=${ARCH} -t ${REPO}/harvester-${COMPONENT_NAME}:${IMAGE_TAG} -f $PACKAGE_DIR/${COMPONENT_NAME}/Dockerfile /go/src/github.com/kubev2v/forklift
+        if [[ -n $PUSH ]] 
+        then
+            docker push ${REPO}/harvester-${COMPONENT_NAME}:${IMAGE_TAG}
+        fi
+fi
