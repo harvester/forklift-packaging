@@ -68,7 +68,7 @@ jobs:
       - name: Run dapper
         run: |
           make package-ansible-operator
-          make forklift-packaging
+          make package-forklift
 
       - name: Remove credentials
         if: ${{ inputs.push == true }}
