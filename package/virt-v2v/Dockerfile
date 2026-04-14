@@ -15,4 +15,8 @@ COPY --from=builder /app/image-converter /usr/local/bin/image-converter
 
 COPY --from=builder /app/virt-v2v-wrapper /usr/bin/virt-v2v-wrapper
 
+RUN zypper -n rm container-suseconnect && \
+    zypper -n install lvm2 && \
+    zypper -n clean -a
+    
 ENTRYPOINT ["/usr/bin/virt-v2v-wrapper"]
