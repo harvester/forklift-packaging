@@ -9,7 +9,7 @@ COMMIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 COMMIT_BRANCH_FORMATTED=$(echo "${COMMIT_BRANCH}" | sed -E 's/[^a-zA-Z0-9.]+/-/g')
 
 
-if [ -n ${TAG} ]
+if [[ -z $TAG ]]
 then
     IMAGE_TAG="${COMMIT_BRANCH_FORMATTED}-head"
 else
