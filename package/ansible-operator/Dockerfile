@@ -2,11 +2,11 @@
 # It is built with dependencies that take a while to download, thus speeding
 # up ansible deploy jobs.
 
-FROM registry.suse.com/bci/bci-base:15.7 AS basebuilder
+FROM registry.suse.com/bci/bci-base:16.0 AS basebuilder
 
 # Install Rust so that we can ensure backwards compatibility with installing/building the cryptography wheel across all platforms
 RUN set -e \
-  && zypper -n ar https://download.opensuse.org/repositories/devel:languages:python:Factory/15.6/devel:languages:python:Factory.repo \
+  && zypper -n ar https://download.opensuse.org/repositories/devel:languages:python:Factory/16.0/devel:languages:python:Factory.repo \
   && zypper -n --gpg-auto-import-keys refresh \
   && zypper -n install rustup \
   && rustup toolchain install stable 
@@ -27,7 +27,7 @@ ENV PIP_NO_CACHE_DIR=1 \
 # Ensure fresh metadata rather than cached metadata, install system and pip python deps,
 # and remove those not needed at runtime.
 RUN set -e \
-  && zypper -n  install gcc libffi-devel openssl-devel python312-devel \
+  && zypper -n  install gcc libffi-devel openssl-devel python312-devel util-linux \
   && pushd /usr/local/bin && ln -sf ../../bin/python3.12 python3 && popd \
   && python3.12 -m ensurepip --upgrade \
   && pip3.12 install --upgrade pip~=23.3.2 \
@@ -39,7 +39,7 @@ RUN set -e \
 
 
   
-FROM registry.suse.com/bci/bci-base:15.7
+FROM registry.suse.com/bci/bci-base:16.0
 ARG ARCH
 
 # Label this image with the repo and commit that built it, for freshmaking purposes.
@@ -54,11 +54,10 @@ RUN mkdir -p /etc/ansible \
   && echo 'roles_path = /opt/ansible/roles' >> /etc/ansible/ansible.cfg 
 
 RUN set -e \
-  && zypper -n ar https://download.opensuse.org/repositories/devel:languages:python:Factory/15.6/devel:languages:python:Factory.repo \
-  && zypper -n ar https://download.opensuse.org/repositories/Virtualization:containers/15.6/Virtualization:containers.repo \
+  && zypper -n ar https://download.opensuse.org/repositories/devel:languages:python:Factory/16.0/devel:languages:python:Factory.repo \
+  && zypper -n ar https://download.opensuse.org/repositories/Virtualization:containers/16.0/Virtualization:containers.repo \
   && zypper -n --gpg-auto-import-keys refresh \
-  && zypper -n  install python312-devel \
-  && zypper -n install tini=0.19.0 \
+  && zypper -n  install python312-devel util-linux tini=0.19.0\
   && zypper -n clean -a \
   && ANSIBLE_OPERATOR_CHECKSUM=ANSIBLE_OPERATOR_CHECKSUM_${ARCH} \
   && curl -L -o /usr/local/bin/ansible-operator https://github.com/operator-framework/ansible-operator-plugins/releases/download/${ANSIBLE_OPERATOR_VERSION}/ansible-operator_linux_${ARCH} \
@@ -85,4 +84,4 @@ WORKDIR ${HOME}
 USER ${USER_UID}
 
 
-ENTRYPOINT ["/tini", "--", "/usr/local/bin/ansible-operator", "run", "--watches-file=./watches.yaml"]
+ENTRYPOINT ["/usr/sbin/tini", "--", "/usr/local/bin/ansible-operator", "run", "--watches-file=./watches.yaml"]
