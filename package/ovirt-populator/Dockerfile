@@ -1,4 +1,5 @@
 FROM registry.suse.com/bci/golang:1.25 AS builder
+ENV GOTOOLCHAIN=auto
 WORKDIR /app
 COPY --chown=1001:0 ./ ./
 RUN go build -buildvcs=false -ldflags="-w -s" github.com/kubev2v/forklift/cmd/ovirt-populator

@@ -1,4 +1,5 @@
 FROM registry.suse.com/bci/golang:1.25 AS builder
+ENV GOTOOLCHAIN=auto
 WORKDIR /app
 COPY ./ ./
 RUN zypper -n install python && \

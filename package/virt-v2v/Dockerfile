@@ -1,4 +1,5 @@
 FROM registry.opensuse.org/opensuse/bci/golang:1.25 AS builder
+ENV GOTOOLCHAIN=auto
 WORKDIR /app
 COPY  --chown=1001:0 ./ ./
 RUN zypper -n in libvirt-devel
