@@ -2,7 +2,7 @@
 # It is built with dependencies that take a while to download, thus speeding
 # up ansible deploy jobs.
 
-FROM registry.suse.com/bci/bci-base:16.0 AS basebuilder
+FROM registry.suse.com/bci/bci-base:16.1 AS basebuilder
 
 # Install Rust so that we can ensure backwards compatibility with installing/building the cryptography wheel across all platforms
 RUN set -e \
@@ -39,7 +39,7 @@ RUN set -e \
 
 
   
-FROM registry.suse.com/bci/bci-base:16.0
+FROM registry.suse.com/bci/bci-base:16.1
 ARG ARCH
 
 # Label this image with the repo and commit that built it, for freshmaking purposes.
