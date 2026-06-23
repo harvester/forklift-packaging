@@ -3,7 +3,7 @@ WORKDIR /app
 COPY --chown=1001:0 ./ ./
 RUN go build -buildvcs=false -ldflags="-w -s" github.com/kubev2v/forklift/cmd/ova-provider-server
 
-FROM registry.suse.com/bci/bci-base:15.7
+FROM registry.suse.com/bci/bci-base:16.1
 # Required to be able to get files from within the pod
 
 RUN zypper -n rm container-suseconnect && \

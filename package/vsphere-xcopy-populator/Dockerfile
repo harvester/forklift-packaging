@@ -9,7 +9,7 @@ RUN go mod download && go mod verify
 RUN make build
 RUN make vmkfstools-wrapper
 RUN ls -l /app/cmd/vsphere-xcopy-volume-populator/vmkfstools-wrapper
-FROM registry.suse.com/bci/bci-base:15.7
+FROM registry.suse.com/bci/bci-base:16.1
 # Required to be able to get files from within the pod
 
 COPY --from=builder /app/cmd/vsphere-xcopy-volume-populator/bin/vsphere-xcopy-volume-populator \
