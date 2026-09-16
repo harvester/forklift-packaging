@@ -1,4 +1,4 @@
-FROM registry.opensuse.org/opensuse/bci/golang:1.25 AS builder
+FROM registry.opensuse.org/opensuse/bci/golang:1.26 AS builder
 ENV GOTOOLCHAIN=auto
 WORKDIR /app
 COPY  --chown=1001:0 ./ ./
