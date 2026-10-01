@@ -42,12 +42,13 @@ COMPONENT_NAME			  ?= ""
 # Legacy dapper env variables
 REPO                      ?=
 PUSH                      ?=
+TAG                       ?=
 DRONE_BRANCH              ?=
 DRONE_TAG                 ?=
 FORKLIFT_TAG              ?= v2.9.2
 
 export MK_DOCKER_PROGRESS MK_DOCKER_PULL MK_REPO_ID
-export REPO PUSH DRONE_BRANCH DRONE_TAG COMPONENT_NAME FORKLIFT_TAG
+export REPO PUSH TAG DRONE_BRANCH DRONE_TAG COMPONENT_NAME FORKLIFT_TAG
 
 MK_HOST_ARCH ?= $(shell uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
 ARCH := $(MK_HOST_ARCH)
@@ -92,7 +93,7 @@ package-forklift-builder: gen-version-env
 package-forklift: package-forklift-builder
 	$(BANNER)
 	docker run $(MK_DOCKER_RUN_OPTS_TTY) --rm --privileged --network host \
-	-e COMPONENT_NAME=$(COMPONENT_NAME) -e PUSH=$(PUSH) -e REPO=$(REPO) \
+	-e COMPONENT_NAME=$(COMPONENT_NAME) -e PUSH=$(PUSH) -e REPO=$(REPO) -e TAG=$(TAG) \
 	    -v /var/run/docker.sock:/var/run/docker.sock \
 	    $(MK_PACKAGING_IMAGE) \
 	    ./scripts/package-forklift
@@ -101,7 +102,7 @@ package-ansible-operator: package-forklift-builder
 	$(BANNER)
 	docker run $(MK_DOCKER_RUN_OPTS_TTY) --rm --privileged --network host \
 	    -v /var/run/docker.sock:/var/run/docker.sock \
-		-e PUSH=$(PUSH) -e REPO=$(REPO) \
+		-e PUSH=$(PUSH) -e REPO=$(REPO) -e TAG=$(TAG) \
 	    $(MK_PACKAGING_IMAGE) \
 	    ./scripts/package-ansible-operator
 
