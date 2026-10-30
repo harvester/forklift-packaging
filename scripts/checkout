@@ -11,3 +11,7 @@ git -C /go/src/github.com/kubev2v/forklift checkout $FORKLIFT_TAG
 # apply patches
 cp $TOP_DIR/patches/main.yml /go/src/github.com/kubev2v/forklift/operator/roles/forkliftcontroller/tasks/main.yml
 cp $TOP_DIR/patches/watches.yml /go/src/github.com/kubev2v/forklift/operator/watches.yml
+# virt-v2v source patches, consumed by package/virt-v2v/Dockerfile (the
+# forklift tree is the docker build context)
+mkdir -p /go/src/github.com/kubev2v/forklift/harvester/virt-v2v
+cp $TOP_DIR/package/virt-v2v/patches/*.patch /go/src/github.com/kubev2v/forklift/harvester/virt-v2v/
